@@ -46,6 +46,14 @@ class FlowField {
     int row = int(constrain(y/resolution, 0, rows-1));
     return field[column][row];
   }
+  
+  void drawBrush(){
+    pushStyle();
+    noFill();
+    stroke(255,255,255);
+    ellipse(mouseX,mouseY,affectRadius*10,affectRadius*10);
+    popStyle();
+  }
 
   void drawField(float x, float y, PVector v) {
     int column = int(constrain(x/resolution, 0, cols-1));

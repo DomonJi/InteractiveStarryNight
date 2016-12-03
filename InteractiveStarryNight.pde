@@ -1,10 +1,10 @@
 final int STAGE_WIDTH = 1200;
 final int STAGE_HEIGHT = 950;
 final int NB_PARTICLES = 60000;
-final float MAX_PARTICLE_SPEED = 3;
+final float MAX_PARTICLE_SPEED = 5;
 
-final int MIN_LIFE_TIME = 10;
-final int MAX_LIFE_TIME = 30;
+final int MIN_LIFE_TIME = 20;
+final int MAX_LIFE_TIME = 50;
 final String IMAGE_PATH = "starrynight.jpg";
 
 myVector tabParticles[];
@@ -80,7 +80,7 @@ void draw()
       tabParticles[i].count < 0) {
       setParticle(i);
     }
-    strokeWeight(sqrt(vx*vx + vy*vy)*1.5*particleSize);
+    strokeWeight(1.5*particleSize);
     stroke(tabParticles[i].myColor, 250);
     line(tabParticles[i].prevX, tabParticles[i].prevY, tabParticles[i].x, tabParticles[i].y);
   }
