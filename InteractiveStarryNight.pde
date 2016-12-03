@@ -93,7 +93,7 @@ void mouseDragged() {
 
 void keyPressed() {
   if (key =='s' || key == 'S') {
-    //ff.saveField();
+    ff.saveField();
   }
 }
 
