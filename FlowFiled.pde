@@ -9,6 +9,7 @@ class FlowField {
   int cols, rows;
   int resolution;
   int affectRadius;
+  float force;
   File file = new File(dataPath("field.txt"));
 
   FlowField(int r) {
@@ -18,6 +19,15 @@ class FlowField {
     field = new PVector[cols][rows];
     init();
     affectRadius = 3;
+    force = 1;
+  }
+  
+  void setRadius(int r){
+    affectRadius = r;
+  }
+  
+  void setForce(float f){
+    force = f;
   }
 
   void init() {
@@ -43,7 +53,7 @@ class FlowField {
     for (int i=-affectRadius; i<=affectRadius; i++) {
       for (int j=-affectRadius; j<=affectRadius; j++) {
         if (i*i+j*j<affectRadius*affectRadius) {
-          try { field[column+i][row+j] = v; }
+          try { field[column+i][row+j] = field[column+i][row+j].add(v); }
           catch(Exception e) {}
         }
       }
@@ -52,7 +62,7 @@ class FlowField {
 
   void onMouseDrag() {
     PVector direc = new PVector(mouseX-pmouseX, mouseY-pmouseY).normalize();
-    drawField(pmouseX, pmouseY, direc);
+    drawField(pmouseX, pmouseY, direc.mult(force));
   }
 
   void saveField() {

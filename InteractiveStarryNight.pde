@@ -1,17 +1,20 @@
 final int STAGE_WIDTH = 1200;
 final int STAGE_HEIGHT = 950;
 final int NB_PARTICLES = 60000;
-final float MAX_PARTICLE_SPEED = 2.5;
-final float PARTICULE_SIZE = 2;
+final float MAX_PARTICLE_SPEED = 3;
+
 final int MIN_LIFE_TIME = 10;
-final int MAX_LIFE_TIME = 20;
+final int MAX_LIFE_TIME = 30;
 final String IMAGE_PATH = "starrynight.jpg";
+
 myVector tabParticles[];
+float particleSize = 1.2;
 PImage myImage;
 int imageW;
 int imageH;
 color myPixels[];
 FlowField ff;
+GUI gui;
 
 void setup()
 {
@@ -20,6 +23,8 @@ void setup()
   initializeImage();
   initializeParticles();
   ff = new FlowField(5);
+  gui = new GUI(this);
+  gui.setup();
 }
 
 void initializeImage()
@@ -52,6 +57,9 @@ void initializeParticles()
 
 void draw()
 {
+  ff.setRadius(gui.getR());
+  ff.setForce(gui.getF());
+  particleSize = gui.getS();
   float vx;
   float vy;
   PVector v;
@@ -72,13 +80,14 @@ void draw()
       tabParticles[i].count < 0) {
       setParticle(i);
     }
-    strokeWeight(sqrt(vx*vx + vy*vy)*1.5*PARTICULE_SIZE);
-    stroke(tabParticles[i].myColor, 200);
+    strokeWeight(sqrt(vx*vx + vy*vy)*1.5*particleSize);
+    stroke(tabParticles[i].myColor, 250);
     line(tabParticles[i].prevX, tabParticles[i].prevY, tabParticles[i].x, tabParticles[i].y);
   }
 }
 
 void mouseDragged() {
+  if(mouseX>950 && mouseY>830) return;
   ff.onMouseDrag();
 }
 
