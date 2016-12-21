@@ -71,7 +71,7 @@ class FlowField {
       for (int j=-affectRadius; j<=affectRadius; j++) {
         if (i*i+j*j<affectRadius*affectRadius) {
           try { 
-            tempField[column+i][row+j].add(v).mult(1.1);
+            tempField[column+i][row+j].add(v).mult(0.9);
           }
           catch(Exception e) {
           }
