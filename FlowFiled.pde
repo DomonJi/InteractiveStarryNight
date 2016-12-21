@@ -6,9 +6,11 @@ import java.io.IOException;
 
 class FlowField {
   PVector[][] field;
+  PVector[][] tempField;
   int cols, rows;
   int resolution;
   int affectRadius;
+  float force;
   File file = new File(dataPath("field.txt"));
 
   FlowField(int r) {
@@ -16,12 +18,29 @@ class FlowField {
     cols = 1200 / resolution;
     rows = 950 / resolution;
     field = new PVector[cols][rows];
+    tempField = new PVector[cols][rows];
     init();
     affectRadius = 3;
+    force = 1;
+  }
+
+  void setRadius(int r) {
+    affectRadius = r;
+  }
+
+  void setForce(float f) {
+    force = f;
   }
 
   void init() {
-    try { readField(); }
+    try { 
+      for (int i=0; i<cols; i++) {
+        for (int j=0; j<rows; j++) {
+          tempField[i][j] = new PVector(0, 0);
+        }
+      }
+      readField();
+    }
     catch(Exception e) {
       for (int i=0; i<cols; i++) {
         for (int j=0; j<rows; j++) {
@@ -34,7 +53,15 @@ class FlowField {
   PVector lookup(float x, float y) {
     int column = int(constrain(x/resolution, 0, cols-1));
     int row = int(constrain(y/resolution, 0, rows-1));
-    return field[column][row];
+    return PVector.add(field[column][row],tempField[column][row]);
+  }
+
+  void drawBrush() {
+    pushStyle();
+    noFill();
+    stroke(255, 255, 255);
+    ellipse(mouseX, mouseY, affectRadius*10, affectRadius*10);
+    popStyle();
   }
 
   void drawField(float x, float y, PVector v) {
@@ -43,16 +70,26 @@ class FlowField {
     for (int i=-affectRadius; i<=affectRadius; i++) {
       for (int j=-affectRadius; j<=affectRadius; j++) {
         if (i*i+j*j<affectRadius*affectRadius) {
-          try { field[column+i][row+j] = v; }
-          catch(Exception e) {}
+          try { 
+            tempField[column+i][row+j].add(v).mult(1.1);
+          }
+          catch(Exception e) {
+          }
         }
       }
     }
   }
-
+  
+  void updateField(){
+    for (int i=0; i<cols; i++) {
+        for (int j=0; j<rows; j++) {
+          tempField[i][j].mult(0.992);
+        }
+      }
+  }
   void onMouseDrag() {
     PVector direc = new PVector(mouseX-pmouseX, mouseY-pmouseY).normalize();
-    drawField(pmouseX, pmouseY, direc);
+    drawField(pmouseX, pmouseY, direc.mult(force));
   }
 
   void saveField() {
@@ -66,7 +103,8 @@ class FlowField {
       }
       out.close();
     }
-    catch(Exception e) {}
+    catch(Exception e) {
+    }
   }
 
   void readField() throws IOException {
